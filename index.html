@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <title>マイページサンプル</title>
+  <style>
+  .container {
+    width: 80%;
+    margin: 0 auto;
+  }
+  #users {
+    padding: 0;
+    margin: 0;
+  }
+  .user {
+    cursor: pointer;
+    padding: 10px;
+    background: #ff7675;
+    border-radius: 20px;
+    margin-right: 10px;
+    list-style: none;
+    color: white;
+    display: inline;
+  }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <h1 id="title"></h1>
+    <p id="comment"></p>
+    <button id="back">戻る</button>
+
+    <div id="users_content">
+      <h2>ユーザー一覧</h2>
+      <ul id="users"></ul>
+    </div>
+  </div>
+
+  <script type="text/javascript" src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script type="text/javascript">
+  $(function() {
+
+    var users = [
+      {
+        "name": "Aくん"
+      },
+      {
+        "name": "Bくん"
+      },
+      {
+        "name": "αくん"
+      }
+    ];
+    init();
+    checkHash();
+    $("#back").on('click', backHome);
+
+    function init() {
+      $("#title").text("全体公開用ページ");
+      $("#comment").text("IDは入力されていません");
+      $("#users_content").show();
+      $("#users").empty();
+      users.forEach(function(value, index) {
+        $("#users").append("<li class='user' data-id='"+ index +"'>" + value["name"] + "</li>")
+      });
+      $(".user").on('click', function() {
+        location.hash = $(this).data("id");
+      });
+      $("#back").hide();
+    }
+
+    function checkHash() {
+      var id = location.hash.slice(1);
+      console.log(id);
+      if(users[id] == undefined) {
+        init();
+        return;
+      }
+      $("#title").text(users[id]["name"]);
+      $("#comment").text(users[id]["name"] + "のマイページ");
+      $("#users_content").hide();
+      $("#back").show();
+    }
+
+    function backHome() {
+      location.hash = "";
+    }
+
+    $(window).on('load hashchange', checkHash);
+  });
+  </script>
+</body>
+</html>
