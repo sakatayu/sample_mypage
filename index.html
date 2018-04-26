@@ -31,6 +31,8 @@
     <p id="comment"></p>
     <button id="back">戻る</button>
 
+    <video id="preview"></video>
+
     <div id="users_content">
       <h2>ユーザー一覧</h2>
       <ul id="users"></ul>
@@ -38,6 +40,7 @@
   </div>
 
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://github.com/schmich/instascan/releases/download/1.0.0/instascan.min.js"></script>
   <script type="text/javascript">
   $(function() {
 
@@ -68,6 +71,21 @@
         location.hash = $(this).data("id");
       });
       $("#back").hide();
+      $("#preview").show();
+
+      var video = document.getElementById("preview");
+      var scanner = new Instascan.Scanner({video: video});
+      scanner.addListener('scan', function(value) {
+        location.hash = value;
+      });
+      Instascan.Camera.getCameras()
+      .then(function(cameras) {
+        if(cameras.length > 0) {
+          scanner.start(cameras[0]);
+        }else {
+          alert("カメラが見つかりません");
+        }
+      });
     }
 
     function checkHash() {
@@ -81,6 +99,7 @@
       $("#comment").text(users[id]["name"] + "のマイページ");
       $("#users_content").hide();
       $("#back").show();
+      $("#preview").hide();
     }
 
     function backHome() {
@@ -88,6 +107,7 @@
     }
 
     $(window).on('load hashchange', checkHash);
+
   });
   </script>
 </body>
